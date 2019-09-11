@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import ExcelWriter
 from pandas import ExcelFile
 import PySimpleGUI as sg
+import numpy as np
 
 #Following function is for obtaining any previous information from ending document
 def ending_document():
@@ -45,7 +46,11 @@ while True:
                     continue
         else:
             sheet = pd.read_excel(pathname)
-        print(sheet.shape)
-        print(sheet.columns)
-        mask = sheet.iloc[0:,0]
-        print(mask)
+        # print(sheet.shape)
+        # print(sheet.columns)
+        # gets entire column as a series
+        uniq = sheet.iloc[0:,0]
+        writer = ExcelWriter('C:/Users/joshua.ryland/Desktop/Magic Stuff/AsbestosItems.xlsx')
+        uniq.to_excel(writer,'sheet1',index=False, index_label='surveyID')
+        writer.save()
+        
