@@ -22,15 +22,85 @@ window = sg.Window("Reinspection Wizard",layout)
 
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
+    productTypeSeries = pd.Series(productType).rename("productType")
+    conditionSeries = pd.Series(condition).rename("condition")
+    surfaceTreatmentSeries = pd.Series(surfaceTreatment).rename("surfaceTreatment")
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
     sampleNumber.to_excel(writer,'sheet1',index=False, index_label='sampleNumber', startcol=11)
+    productTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='productType', startcol= 15)
+    conditionSeries.to_excel(writer, 'sheet1',index=False, index_label='condition', startcol= 16)
+    surfaceTreatmentSeries.to_excel(writer, 'sheet1',index=False, index_label='surfaceTreatment', startcol= 17)
     asbestosTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='asbestosType', startcol= 18)
+    
     #saves files
     writer.save()
+
+def scores (number):
+    if(number == 1):
+        productType.append(0)
+        condition.append(0)
+        surfaceTreatment.append(0)
+        asbestosType.append(number)
+    elif(number == 2):
+        productType.append(0)
+        condition.append(0)
+        surfaceTreatment.append(0)
+        asbestosType.append(number)
+    elif(number == 3):
+        productType.append(0)
+        condition.append(0)
+        surfaceTreatment.append(0)
+        asbestosType.append(number)
+    elif(number == 4):
+        productType.append(1)
+        condition.append(0)
+        surfaceTreatment.append(0)
+        asbestosType.append(3)
+    elif(number == 5):
+        productType.append(1)
+        condition.append(1)
+        surfaceTreatment.append(0)
+        asbestosType.append(3)
+    elif(number == 6):
+        productType.append(1)
+        condition.append(1)
+        surfaceTreatment.append(1)
+        asbestosType.append(3)
+    elif(number == 7):
+        productType.append(2)
+        condition.append(1)
+        surfaceTreatment.append(1)
+        asbestosType.append(3)
+    elif(number == 8):
+        productType.append(2)
+        condition.append(2)
+        surfaceTreatment.append(1)
+        asbestosType.append(3)
+    elif(number == 9):
+        productType.append(2)
+        condition.append(2)
+        surfaceTreatment.append(2)
+        asbestosType.append(3)
+    elif(number == 10):
+        productType.append(3)
+        condition.append(2)
+        surfaceTreatment.append(2)
+        asbestosType.append(3)
+    elif(number == 11):
+        productType.append(3)
+        condition.append(3)
+        surfaceTreatment.append(2)
+        asbestosType.append(3)
+    elif(number == 12):
+        productType.append(3)
+        condition.append(3)
+        surfaceTreatment.append(3)
+        asbestosType.append(3)
+
 
 #Gui functionality
 while True:
@@ -67,11 +137,8 @@ while True:
         asbestosType = []
         # Iterating through Material Scores and adding values to series.
         for num, score in colMatAssessment.iteritems():
-            if(score == 1):
-                productType.append(0)
-                condition.append(0)
-                surfaceTreatment.append(0)
-                asbestosType.append(1)
+            if(type(score) == type(1)):
+                scores(score)
             else:
                 continue
-        writeExcel(sampleNumber, asbestosType)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment)
