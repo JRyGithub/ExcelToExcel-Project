@@ -20,6 +20,18 @@ layout = [[sg.Text('Filename:')],
 
 window = sg.Window("Reinspection Wizard",layout)
 
+
+#WritingExcelFile and Formatiing
+def writeExcel (sampleNumber, asbestosType):
+    asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
+    # Creates Excel File to be written
+    writer = ExcelWriter('testingdoc.xlsx')
+    #writes nessecary information
+    sampleNumber.to_excel(writer,'sheet1',index=False, index_label='sampleNumber', startcol=11)
+    asbestosTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='asbestosType', startcol= 18)
+    #saves files
+    writer.save()
+
 #Gui functionality
 while True:
     event,values = window.Read()
@@ -41,11 +53,25 @@ while True:
         else:
             sheet = pd.read_excel(pathname)
         
-        # gets entire column as a series
-        columnGet = sheet.iloc[0:,0]
-        surveyID = columnGet.rename("surveyId")
-        print(surveyID)
-        writer = ExcelWriter('testingdoc.xlsx')
-        surveyID.to_excel(writer,'sheet1',index=False, index_label='surveyID')
-        writer.save()
-
+        # gets entire columns as a series
+        columnUniqueIdentifyer = sheet.iloc[0:,0]
+        # Renames a column
+        sampleNumber = columnUniqueIdentifyer.rename("sampleNumber")
+        
+        # Here I am taking the material score, seeing its value and splitting it into 4 columns depending on its values.
+        colMatAssessment = sheet.iloc[0:,9]
+        # Creating new lists
+        productType = []
+        condition = []
+        surfaceTreatment = []
+        asbestosType = []
+        # Iterating through Material Scores and adding values to series.
+        for num, score in colMatAssessment.iteritems():
+            if(score == 1):
+                productType.append(0)
+                condition.append(0)
+                surfaceTreatment.append(0)
+                asbestosType.append(1)
+            else:
+                continue
+        writeExcel(sampleNumber, asbestosType)
