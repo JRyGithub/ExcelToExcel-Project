@@ -5,6 +5,7 @@ from pandas import ExcelWriter
 from pandas import ExcelFile
 import PySimpleGUI as sg
 import numpy as np
+import re
 
 #Set up GUI
 sg.SetOptions(
@@ -100,7 +101,14 @@ def scores (number):
         condition.append(3)
         surfaceTreatment.append(3)
         asbestosType.append(3)
-
+def extentSlice(extent):
+    extentStr = str(extent)
+    if(extentStr[0] == '>') or (extentStr[0] == '<'):
+        unitOM.append(extentStr[-2:])
+        extents.append(extentStr[1:-2])
+    else:
+        unitOM.append(extentStr[-2:])
+        extents.append(extentStr[0:-2])
 
 #Gui functionality
 while True:
@@ -141,4 +149,19 @@ while True:
                 scores(score)
             else:
                 continue
-        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment)
+        # Extent Split into two colums of the format int and string
+        extentLock = sheet.iloc[0:,7]
+        unitOM = []
+        extents = []
+
+        for num, extent in extentLock.iteritems():
+            if (extent == 'N/A'):
+                continue
+            else:
+                extentSlice(extent)
+        print(unitOM)
+        print(extents)
+        #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
+        # writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment)
+
+        
