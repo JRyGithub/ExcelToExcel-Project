@@ -6,11 +6,6 @@ from pandas import ExcelFile
 import PySimpleGUI as sg
 import numpy as np
 
-#Following function is for obtaining any previous information from ending document
-def ending_document():
-    EndingDoc = pd.read_excel("C:/Users/joshua.ryland/Desktop/Magic Stuff/AsbestosItems.xlsx")
-    return EndingDoc
-
 #Set up GUI
 sg.SetOptions(
 background_color='#FFCD11',
@@ -33,7 +28,6 @@ while True:
     elif event is event == "Submit":
         pathname = values[0]
         print(pathname +"\n")
-        endingDoc = ending_document()
         #checks if pathname contains AMP, as that would mean a different register has been added which is on a different sheet
         if("AMP" in pathname):
             try:
@@ -46,11 +40,12 @@ while True:
                     continue
         else:
             sheet = pd.read_excel(pathname)
-        # print(sheet.shape)
-        # print(sheet.columns)
-        # gets entire column as a series
-        uniq = sheet.iloc[0:,0]
-        writer = ExcelWriter('C:/Users/joshua.ryland/Desktop/Magic Stuff/AsbestosItems.xlsx')
-        uniq.to_excel(writer,'sheet1',index=False, index_label='surveyID')
-        writer.save()
         
+        # gets entire column as a series
+        columnGet = sheet.iloc[0:,0]
+        surveyID = columnGet.rename("surveyId")
+        print(surveyID)
+        writer = ExcelWriter('testingdoc.xlsx')
+        surveyID.to_excel(writer,'sheet1',index=False, index_label='surveyID')
+        writer.save()
+
