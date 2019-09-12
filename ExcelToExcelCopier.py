@@ -6,6 +6,7 @@ from pandas import ExcelFile
 import PySimpleGUI as sg
 import numpy as np
 import re
+import math
 
 #Set up GUI
 sg.SetOptions(
@@ -23,19 +24,26 @@ window = sg.Window("Reinspection Wizard",layout)
 
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
     surfaceTreatmentSeries = pd.Series(surfaceTreatment).rename("surfaceTreatment")
+    extentsSeries = pd.Series(extents).rename("extent")
+    unitOMSeries = pd.Series(unitOM).rename("UoM")
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
+    materialDesc.to_excel(writer,'sheet1',index=False, index_label='materialDesc', startcol=9)
     sampleNumber.to_excel(writer,'sheet1',index=False, index_label='sampleNumber', startcol=11)
+    extentsSeries.to_excel(writer, 'sheet1',index=False, index_label='extent', startcol= 13)
+    unitOMSeries.to_excel(writer, 'sheet1',index=False, index_label='UoM', startcol= 14)
     productTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='productType', startcol= 15)
     conditionSeries.to_excel(writer, 'sheet1',index=False, index_label='condition', startcol= 16)
     surfaceTreatmentSeries.to_excel(writer, 'sheet1',index=False, index_label='surfaceTreatment', startcol= 17)
     asbestosTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='asbestosType', startcol= 18)
+    identification.to_excel(writer, 'sheet1',index=False, index_label='identification', startcol= 19)
+    recommendedAction.to_excel(writer, 'sheet1',index=False, index_label='recommendedAction', startcol= 20)
     
     #saves files
     writer.save()
@@ -155,13 +163,25 @@ while True:
         extents = []
 
         for num, extent in extentLock.iteritems():
-            if (extent == 'N/A'):
-                continue
+            testString = str(type(extent))
+            if(testString == '<class \'float\'>'):
+                unitOM.append('N/A')
+                extents.append('N/A')
             else:
                 extentSlice(extent)
-        print(unitOM)
-        print(extents)
+        #Asbestos Presence to identity
+        asbestosPresence = sheet.iloc[0:,6]
+        identification = asbestosPresence.rename("identification") 
+
+        #Observations and Recommendations to recommendedAction
+        obsAndRec = sheet.iloc[0:,13]
+        recommendedAction = obsAndRec.rename("recommendedAction")
+
+        #Sample Catergory to materialDesc
+        samCat =  sheet.iloc[0:,5]
+        materialDesc = samCat.rename("materialDesc")
+
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        # writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc)
 
         
