@@ -24,16 +24,18 @@ window = sg.Window("Reinspection Wizard",layout)
 
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
     surfaceTreatmentSeries = pd.Series(surfaceTreatment).rename("surfaceTreatment")
     extentsSeries = pd.Series(extents).rename("extent")
     unitOMSeries = pd.Series(unitOM).rename("UoM")
+    surveyId = pd.Series(surveyId).rename("surveyId")
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
+    surveyId.to_excel(writer,'sheet1',index=False, index_label='suveyId', startcol=0)
     materialDesc.to_excel(writer,'sheet1',index=False, index_label='materialDesc', startcol=9)
     sampleNumber.to_excel(writer,'sheet1',index=False, index_label='sampleNumber', startcol=11)
     extentsSeries.to_excel(writer, 'sheet1',index=False, index_label='extent', startcol= 13)
@@ -181,7 +183,15 @@ while True:
         samCat =  sheet.iloc[0:,5]
         materialDesc = samCat.rename("materialDesc")
 
+        #surveyId
+        surveyId = []
+        rangeId = len(columnUniqueIdentifyer)
+        for x in range(0,rangeId):
+            surveyId.append('N/A')
+        
+        #
+
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc)
+        #writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId)
 
         
