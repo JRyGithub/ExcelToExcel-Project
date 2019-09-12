@@ -189,7 +189,11 @@ while True:
         for x in range(0,rangeId):
             surveyId.append('N/A')
         
-        #
+        #date <TODO>
+        datesList = []
+        for num, dates in columnUniqueIdentifyer.iteritems():
+            date = dates[0:6] 
+            
 
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
         #writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId)
