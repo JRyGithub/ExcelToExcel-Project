@@ -22,9 +22,13 @@ layout = [[sg.Text('Filename:')],
 
 window = sg.Window("Reinspection Wizard",layout)
 
+def blankNamedSeriesMaker(name):
+    nameList = []
+    nameList = pd.Series().rename(name)
+    return nameList
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach, actionDatesList):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
@@ -40,6 +44,13 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     materialCode = pd.Series(materialCode).rename("materialCode")
     sampleNotes = []
     sampleNotes = pd.Series().rename("sampleNotes")
+    noAccess = blankNamedSeriesMaker("noAccess")
+    externalRef = blankNamedSeriesMaker("externalRef")
+    notes = blankNamedSeriesMaker("notes")
+    photofile1 = blankNamedSeriesMaker("photofile1")
+    photofile2 =  blankNamedSeriesMaker("photofile2")
+    default_pa_id = blankNamedSeriesMaker("default_pa_id")
+    actionDatesList = pd.Series(actionDatesList).rename("actionDate")
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
@@ -64,7 +75,13 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     asbestosTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='asbestosType', startcol= 18)
     identification.to_excel(writer, 'sheet1',index=False, index_label='identification', startcol= 19)
     recommendedAction.to_excel(writer, 'sheet1',index=False, index_label='recommendedAction', startcol= 20)
-    
+    noAccess.to_excel(writer, 'sheet1',index=False, index_label='noAccess', startcol= 21)
+    externalRef.to_excel(writer, 'sheet1',index=False, index_label='externalRef', startcol= 22)
+    notes.to_excel(writer, 'sheet1',index=False, index_label='notes', startcol= 22)
+    photofile1.to_excel(writer, 'sheet1',index=False, index_label='photofile1', startcol= 23)
+    photofile2.to_excel(writer, 'sheet1',index=False, index_label='photofile2', startcol= 24)
+    actionDatesList.to_excel(writer, 'sheet1',index=False, index_label='actionDate', startcol= 25)
+    default_pa_id.to_excel(writer, 'sheet1',index=False, index_label='default_pa_id', startcol= 26)
     #saves files
     writer.save()
 
@@ -137,7 +154,6 @@ def extentSlice(extent):
     else:
         unitOM.append(extentStr[-2:])
         extents.append(extentStr[0:-2])
-
 #Gui functionality
 while True:
     event,values = window.Read()
@@ -253,7 +269,21 @@ while True:
         #approach
         sampleMetod = sheet.iloc[0:,1]
         approach = locationOfSample.rename("approach")
+
+        #actionDate
+        reinspectDate = sheet.iloc[0:,15]
+        actionDate = reinspectDate.rename("actionDate")
+        actionDatesList = []
+        for num, actionDates in actionDate.iteritems():
+            testString = str(type(actionDates))
+            if(testString == '<class \'pandas._libs.tslibs.nattype.NaTType\'>'):
+                actionDatesList.append("N/A")
+            else:
+                actionDates = str(actionDates)
+                newDate = actionDates[8:10]+"/"+actionDates[5:7]+"/"+actionDates[:4]
+                actionDatesList.append(newDate)
+
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach, actionDatesList)
 
         
