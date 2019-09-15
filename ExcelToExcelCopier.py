@@ -24,7 +24,7 @@ window = sg.Window("Reinspection Wizard",layout)
 
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
@@ -32,12 +32,30 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     extentsSeries = pd.Series(extents).rename("extent")
     unitOMSeries = pd.Series(unitOM).rename("UoM")
     surveyId = pd.Series(surveyId).rename("surveyId")
+    datesList = pd.Series(datesList).rename("date")
+    surveyorList = pd.Series(surveyorList).rename("surveyor")
+    floor = pd.Series(floor).rename("floor")
+    location = pd.Series(locationList).rename("location")
+    items = pd.Series(items).rename("items")
+    materialCode = pd.Series(materialCode).rename("materialCode")
+    sampleNotes = []
+    sampleNotes = pd.Series().rename("sampleNotes")
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
     surveyId.to_excel(writer,'sheet1',index=False, index_label='suveyId', startcol=0)
+    datesList.to_excel(writer,'sheet1',index=False, index_label='date', startcol=1)
+    surveyorList.to_excel(writer,'sheet1',index=False, index_label='surveyor', startcol=2)
+    buildingName.to_excel(writer,'sheet1',index=False, index_label='building', startcol=3)
+    floor.to_excel(writer,'sheet1',index=False, index_label='floor', startcol=4)
+    location.to_excel(writer,'sheet1',index=False, index_label='location', startcol=5)
+    locationDescription.to_excel(writer,'sheet1',index=False, index_label='locationDescription', startcol=6)
+    items.to_excel(writer,'sheet1',index=False, index_label='item', startcol=7)
+    materialCode.to_excel(writer,'sheet1',index=False, index_label='materialCode', startcol =8)
     materialDesc.to_excel(writer,'sheet1',index=False, index_label='materialDesc', startcol=9)
+    approach.to_excel(writer,'sheet1',index=False, index_label='approach', startcol=10)
     sampleNumber.to_excel(writer,'sheet1',index=False, index_label='sampleNumber', startcol=11)
+    sampleNotes.to_excel(writer,'sheet1',index=False, index_label='sampleNote', startcol=12)
     extentsSeries.to_excel(writer, 'sheet1',index=False, index_label='extent', startcol= 13)
     unitOMSeries.to_excel(writer, 'sheet1',index=False, index_label='UoM', startcol= 14)
     productTypeSeries.to_excel(writer, 'sheet1',index=False, index_label='productType', startcol= 15)
@@ -189,13 +207,53 @@ while True:
         for x in range(0,rangeId):
             surveyId.append('N/A')
         
-        #date <TODO>
+        #date
         datesList = []
         for num, dates in columnUniqueIdentifyer.iteritems():
-            date = dates[0:6] 
+            date = dates[0:6]
+            year, month, day = date[:2],date[2:4],date[4:]
+            reformattedDate = str(day)+"/"+str(month)+"/20"+str(year)
+            datesList.append(reformattedDate)
             
+        #surveyor
+        surveyorList = []
+        for num, surveyor in columnUniqueIdentifyer.iteritems():
+            surveyorName = ''.join(i for i in surveyor if not i.isdigit())
+            surveyorList.append(surveyorName)
 
+        #BuildingName
+        propertyName = sheet.iloc[0:,2]
+        buildingName = propertyName.rename('building')
+
+        #floor
+        floor = []
+        rangeId = len(columnUniqueIdentifyer)
+        for x in range(0,rangeId):
+            floor.append('N/A')
+        #location
+        locationList = []
+        rangeId = len(columnUniqueIdentifyer)
+        for x in range(0,rangeId):
+            locationList.append('N/A')
+        
+        #location  description
+        locationOfSample = sheet.iloc[0:,3]
+        locationDescription = locationOfSample.rename("locationDescription")
+
+        #item
+        items = []
+        rangeId = len(columnUniqueIdentifyer)
+        for x in range(0,rangeId):
+            items.append('N/A')
+        #materialCode
+        materialCode = []
+        rangeId = len(columnUniqueIdentifyer)
+        for x in range(0,rangeId):
+            materialCode.append('N/A')
+        #approach
+        sampleMetod = sheet.iloc[0:,1]
+        approach = locationOfSample.rename("approach")
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        #writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach)
 
         
