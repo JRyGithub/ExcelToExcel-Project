@@ -28,7 +28,8 @@ def blankNamedSeriesMaker(name):
     return nameList
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach, actionDatesList):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, 
+locationList, locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA, maintenanceTypePA, frequencyPA):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
@@ -51,6 +52,16 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     photofile2 =  blankNamedSeriesMaker("photofile2")
     default_pa_id = blankNamedSeriesMaker("default_pa_id")
     actionDatesList = pd.Series(actionDatesList).rename("actionDate")
+    normalOccupancyPA = pd.Series(normalOccupancyPA).rename("normalOccupancyPA")
+    locationPA = pd.Series(locationPA).rename("locationPA")
+    accessibilityPA = pd.Series(accessibilityPA).rename("accessibilityPA")
+    amountPA = pd.Series(amountPA).rename("amountPA")
+    noOfPeoplePA = pd.Series(noOfPeoplePA).rename("noOfPeoplePA")
+    usePA = pd.Series(usePA).rename("usePA")
+    averageTimePA = pd.Series(averageTimePA).rename("averageTimePA")
+    maintenanceTypePA = pd.Series(maintenanceTypePA).rename("maintenanceTypePA")
+    frequencyPA = pd.Series(frequencyPA).rename("frequencyPA")
+        
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
     #writes nessecary information
@@ -77,11 +88,40 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     recommendedAction.to_excel(writer, 'sheet1',index=False, index_label='recommendedAction', startcol= 20)
     noAccess.to_excel(writer, 'sheet1',index=False, index_label='noAccess', startcol= 21)
     externalRef.to_excel(writer, 'sheet1',index=False, index_label='externalRef', startcol= 22)
-    notes.to_excel(writer, 'sheet1',index=False, index_label='notes', startcol= 22)
-    photofile1.to_excel(writer, 'sheet1',index=False, index_label='photofile1', startcol= 23)
-    photofile2.to_excel(writer, 'sheet1',index=False, index_label='photofile2', startcol= 24)
-    actionDatesList.to_excel(writer, 'sheet1',index=False, index_label='actionDate', startcol= 25)
-    default_pa_id.to_excel(writer, 'sheet1',index=False, index_label='default_pa_id', startcol= 26)
+    notes.to_excel(writer, 'sheet1',index=False, index_label='notes', startcol= 23)
+    photofile1.to_excel(writer, 'sheet1',index=False, index_label='photofile1', startcol= 24)
+    photofile2.to_excel(writer, 'sheet1',index=False, index_label='photofile2', startcol= 25)
+    actionDatesList.to_excel(writer, 'sheet1',index=False, index_label='actionDate', startcol= 26)
+    default_pa_id.to_excel(writer, 'sheet1',index=False, index_label='default_pa_id', startcol= 27)
+    normalOccupancyPA.to_excel(writer, 'sheet1',index=False, index_label='normalOccupancyPA', startcol= 28)
+    locationPA.to_excel(writer, 'sheet1',index=False, index_label='locationPA', startcol= 29)
+    accessibilityPA.to_excel(writer, 'sheet1',index=False, index_label='accessibilityPA', startcol= 30)
+    amountPA.to_excel(writer, 'sheet1',index=False, index_label='amountPA', startcol= 31)
+    noOfPeoplePA.to_excel(writer, 'sheet1',index=False, index_label='noOfPeoplePA', startcol= 32)
+    usePA.to_excel(writer, 'sheet1',index=False, index_label='usePA', startcol= 33)
+    averageTimePA.to_excel(writer, 'sheet1',index=False, index_label='averageTimePA', startcol= 34)
+    maintenanceTypePA.to_excel(writer, 'sheet1',index=False, index_label='maintenanceTypePA', startcol= 35)
+    frequencyPA.to_excel(writer, 'sheet1',index=False, index_label='frequencyPA', startcol= 36)
+    # 
+    counter = 2
+    listCount = 0
+    writeCounter = 37
+    coolList = []
+    while(counter <= 9):
+        tempList = []
+        item = "item"+str(counter)
+        material = "material"+str(counter)
+        item = blankNamedSeriesMaker(item)
+        material = blankNamedSeriesMaker(material)
+        tempList.append(item)
+        tempList.append(material)
+        coolList.append(tempList)
+        counter = counter + 1
+        coolList[listCount][0].to_excel(writer, 'sheet1',index=False, index_label='frequencyPA', startcol= writeCounter )
+        writeCounter = writeCounter+1
+        coolList[listCount][1].to_excel(writer, 'sheet1',index=False, index_label='frequencyPA', startcol= writeCounter )
+        writeCounter = writeCounter+1
+        listCount = listCount +1
     #saves files
     writer.save()
 
@@ -154,6 +194,127 @@ def extentSlice(extent):
     else:
         unitOM.append(extentStr[-2:])
         extents.append(extentStr[0:-2])
+def priorScores(number):
+    if(number == 1):
+        normalOccupancyPA.append(1)
+        locationPA.append(0)
+        accessibilityPA.append(0)
+        amountPA.append(0)
+        noOfPeoplePA.append(0)
+        usePA.append(0)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 2):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(0)
+        amountPA.append(0)
+        noOfPeoplePA.append(0)
+        usePA.append(0)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 3):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(0)
+        noOfPeoplePA.append(0)
+        usePA.append(0)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 4):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(0)
+        usePA.append(0)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 5):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(0)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 6):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(0)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 7):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(0)
+        frequencyPA.append(0)
+    elif(number == 8):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(1)
+        frequencyPA.append(0)
+    elif(number == 9):
+        normalOccupancyPA.append(1)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(1)
+        frequencyPA.append(1)
+    elif(number == 10):
+        normalOccupancyPA.append(2)
+        locationPA.append(1)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(1)
+        frequencyPA.append(1)
+    elif(number == 11):
+        normalOccupancyPA.append(2)
+        locationPA.append(2)
+        accessibilityPA.append(1)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(1)
+        frequencyPA.append(1)
+    elif(number == 12):
+        normalOccupancyPA.append(2)
+        locationPA.append(2)
+        accessibilityPA.append(2)
+        amountPA.append(1)
+        noOfPeoplePA.append(1)
+        usePA.append(1)
+        averageTimePA.append(1)
+        maintenanceTypePA.append(1)
+        frequencyPA.append(1)
 #Gui functionality
 while True:
     event,values = window.Read()
@@ -189,10 +350,14 @@ while True:
         asbestosType = []
         # Iterating through Material Scores and adding values to series.
         for num, score in colMatAssessment.iteritems():
-            if(type(score) == type(1)):
-                scores(score)
+            score = str(score)
+            if(score == "nan"):
+                productType.append("N/A")
+                condition.append("N/A")
+                surfaceTreatment.append("N/A")
+                asbestosType.append("N/A")
             else:
-                continue
+                scores(int(float(score)))
         # Extent Split into two colums of the format int and string
         extentLock = sheet.iloc[0:,7]
         unitOM = []
@@ -283,7 +448,38 @@ while True:
                 newDate = actionDates[8:10]+"/"+actionDates[5:7]+"/"+actionDates[:4]
                 actionDatesList.append(newDate)
 
+        #priorityScore
+        colPriorAssessment = sheet.iloc[:,10]
+        normalOccupancyPA = []
+        locationPA = []
+        accessibilityPA = []
+        amountPA = []
+        noOfPeoplePA = []
+        usePA = []
+        averageTimePA = []
+        maintenanceTypePA = []
+        frequencyPA = []
+        for num, score in colPriorAssessment.iteritems():
+            score = str(score)
+            if(score == "nan"):
+                normalOccupancyPA.append("N/A")
+                locationPA.append("N/A")
+                accessibilityPA.append("N/A")
+                amountPA.append("N/A")
+                noOfPeoplePA.append("N/A")
+                usePA.append("N/A")
+                averageTimePA.append("N/A")
+                maintenanceTypePA.append("N/A")
+                frequencyPA.append("N/A")
+            else:
+                priorScores(int(float(score)))
+        
+
+        
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList, locationDescription, items, materialCode, approach, actionDatesList)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
+        recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
+        locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
+        maintenanceTypePA,frequencyPA)
 
         
