@@ -476,9 +476,9 @@ while True:
 
         
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
-        recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
-        locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
-        maintenanceTypePA,frequencyPA)
+        # writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
+        # recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
+        # locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
+        # maintenanceTypePA,frequencyPA)
 
         
