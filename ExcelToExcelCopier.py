@@ -41,7 +41,7 @@ locationList, locationDescription, items, materialCode, approach, actionDatesLis
     surveyorList = pd.Series(surveyorList).rename("surveyor")
     floor = pd.Series(floor).rename("floor")
     location = pd.Series(locationList).rename("location")
-    items = pd.Series(items).rename("items")
+    items = pd.Series(items).rename("item")
     materialCode = pd.Series(materialCode).rename("materialCode")
     sampleNotes = []
     sampleNotes = pd.Series().rename("sampleNotes")
@@ -352,10 +352,10 @@ while True:
         for num, score in colMatAssessment.iteritems():
             score = str(score)
             if(score == "nan"):
-                productType.append("N/A")
-                condition.append("N/A")
-                surfaceTreatment.append("N/A")
-                asbestosType.append("N/A")
+                productType.append("")
+                condition.append("")
+                surfaceTreatment.append("")
+                asbestosType.append("")
             else:
                 scores(int(float(score)))
         # Extent Split into two colums of the format int and string
@@ -366,8 +366,8 @@ while True:
         for num, extent in extentLock.iteritems():
             testString = str(type(extent))
             if(testString == '<class \'float\'>'):
-                unitOM.append('N/A')
-                extents.append('N/A')
+                unitOM.append('')
+                extents.append('')
             else:
                 extentSlice(extent)
         #Asbestos Presence to identity
@@ -386,7 +386,7 @@ while True:
         surveyId = []
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
-            surveyId.append('N/A')
+            surveyId.append('')
         
         #date
         datesList = []
@@ -410,12 +410,12 @@ while True:
         floor = []
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
-            floor.append('N/A')
+            floor.append('')
         #location
         locationList = []
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
-            locationList.append('N/A')
+            locationList.append('')
         
         #location  description
         locationOfSample = sheet.iloc[0:,3]
@@ -425,16 +425,12 @@ while True:
         items = []
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
-            items.append('N/A')
+            items.append('')
         #materialCode
         materialCode = []
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
-            materialCode.append('N/A')
-        #approach
-        sampleMetod = sheet.iloc[0:,1]
-        approach = locationOfSample.rename("approach")
-
+            materialCode.append('')
         #actionDate
         reinspectDate = sheet.iloc[0:,15]
         actionDate = reinspectDate.rename("actionDate")
@@ -442,7 +438,7 @@ while True:
         for num, actionDates in actionDate.iteritems():
             testString = str(type(actionDates))
             if(testString == '<class \'pandas._libs.tslibs.nattype.NaTType\'>'):
-                actionDatesList.append("N/A")
+                actionDatesList.append("")
             else:
                 actionDates = str(actionDates)
                 newDate = actionDates[8:10]+"/"+actionDates[5:7]+"/"+actionDates[:4]
@@ -462,17 +458,20 @@ while True:
         for num, score in colPriorAssessment.iteritems():
             score = str(score)
             if(score == "nan"):
-                normalOccupancyPA.append("N/A")
-                locationPA.append("N/A")
-                accessibilityPA.append("N/A")
-                amountPA.append("N/A")
-                noOfPeoplePA.append("N/A")
-                usePA.append("N/A")
-                averageTimePA.append("N/A")
-                maintenanceTypePA.append("N/A")
-                frequencyPA.append("N/A")
+                normalOccupancyPA.append("")
+                locationPA.append("")
+                accessibilityPA.append("")
+                amountPA.append("")
+                noOfPeoplePA.append("")
+                usePA.append("")
+                averageTimePA.append("")
+                maintenanceTypePA.append("")
+                frequencyPA.append("")
             else:
                 priorScores(int(float(score)))
+        #approach
+        approach = sheet.iloc[0:,1]
+        approach = approach.rename("approach")
         
 
         
