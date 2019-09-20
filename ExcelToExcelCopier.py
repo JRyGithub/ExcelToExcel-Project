@@ -351,7 +351,7 @@ while True:
         # Iterating through Material Scores and adding values to series.
         for num, score in colMatAssessment.iteritems():
             score = str(score)
-            if(score == "nan"):
+            if(score == "nan") or (score == "-"):
                 productType.append("")
                 condition.append("")
                 surfaceTreatment.append("")
@@ -400,7 +400,32 @@ while True:
         surveyorList = []
         for num, surveyor in columnUniqueIdentifyer.iteritems():
             surveyorName = ''.join(i for i in surveyor if not i.isdigit())
-            surveyorList.append(surveyorName)
+            if ("SM" in surveyorName) or ("BMI" in surveyorName):
+                surveyorList.append("Samisoni Manu")
+            elif "RMC" in surveyorName:
+                surveyorList.append("Robert McAllister")
+            elif "LE" in surveyorName:
+                surveyorList.append("Luke England")
+            elif "DC" in surveyorName:
+                surveyorList.append("Darren Carter")
+            elif ("CM" in surveyorName) or ("CP" in surveyorName):
+                surveyorList.append("Chloe Parkins")
+            elif ("TD" in surveyorName) or ("DAV" in surveyorName):
+                surveyorList.append("Tony Davison")
+            elif ("BAL" in surveyorName) or ("AB" in surveyorList) or ("HP" in surveyorList) or ("SARAB" in surveyorList):
+                surveyorList.append("Andrew Ball")
+            elif ("JR" in surveyorName):
+                surveyorList.append("Joshua Ryland")
+            elif ("KD" in surveyorName):
+                surveyorList.append("Kurt Downie")
+            elif ("SC" in surveyorName):
+                surveyorList.append("Simon Cunliffe")
+            elif ("SP" in surveyorName):
+                surveyorList.append("Simon Paykel")
+            elif ("RA" in surveyorName):
+                surveyorList.append("Richard Angel")
+            else:
+                surveyorList.append(surveyorName)
 
         #BuildingName
         propertyName = sheet.iloc[0:,2]
@@ -457,7 +482,7 @@ while True:
         frequencyPA = []
         for num, score in colPriorAssessment.iteritems():
             score = str(score)
-            if(score == "nan"):
+            if(score == "nan") or (score == "-"):
                 normalOccupancyPA.append("")
                 locationPA.append("")
                 accessibilityPA.append("")
@@ -476,9 +501,9 @@ while True:
 
         
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
-        # writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
-        # recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
-        # locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
-        # maintenanceTypePA,frequencyPA)
+        writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
+        recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
+        locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
+        maintenanceTypePA,frequencyPA)
 
         
