@@ -28,8 +28,8 @@ def blankNamedSeriesMaker(name):
     return nameList
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, 
-locationList, locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA, maintenanceTypePA, frequencyPA):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, 
+locationList, locationDescription, items, materialCode, approachList, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA, maintenanceTypePA, frequencyPA, notes):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
@@ -47,7 +47,8 @@ locationList, locationDescription, items, materialCode, approach, actionDatesLis
     sampleNotes = pd.Series().rename("sampleNotes")
     noAccess = blankNamedSeriesMaker("noAccess")
     externalRef = blankNamedSeriesMaker("externalRef")
-    notes = blankNamedSeriesMaker("notes")
+    recommendedAction = blankNamedSeriesMaker("recommendedAction")
+    # notes = blankNamedSeriesMaker("notes")
     photofile1 = blankNamedSeriesMaker("photofile1")
     photofile2 =  blankNamedSeriesMaker("photofile2")
     default_pa_id = blankNamedSeriesMaker("default_pa_id")
@@ -61,6 +62,7 @@ locationList, locationDescription, items, materialCode, approach, actionDatesLis
     averageTimePA = pd.Series(averageTimePA).rename("averageTimePA")
     maintenanceTypePA = pd.Series(maintenanceTypePA).rename("maintenanceTypePA")
     frequencyPA = pd.Series(frequencyPA).rename("frequencyPA")
+    approach = pd.Series(approachList).rename("approach")
         
     # Creates Excel File to be written
     writer = ExcelWriter('testingdoc.xlsx')
@@ -374,9 +376,9 @@ while True:
         asbestosPresence = sheet.iloc[0:,6]
         identification = asbestosPresence.rename("identification") 
 
-        #Observations and Recommendations to recommendedAction
+        #Observations and Recommendations to notes
         obsAndRec = sheet.iloc[0:,13]
-        recommendedAction = obsAndRec.rename("recommendedAction")
+        notes = obsAndRec.rename("notes")
 
         #Sample Catergory to materialDesc
         samCat =  sheet.iloc[0:,5]
@@ -496,14 +498,20 @@ while True:
                 priorScores(int(float(score)))
         #approach
         approach = sheet.iloc[0:,1]
-        approach = approach.rename("approach")
+        approachList = []
+        for num, approaches in approach.iteritems():
+            if(approaches == "SS"):
+                approachList.append("S")
+            else:
+                approachList.append("PS")
+        
         
 
         
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
         writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
-        recommendedAction, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
-        locationDescription, items, materialCode, approach, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
+        notes, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
+        locationDescription, items, materialCode, approachList, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
         maintenanceTypePA,frequencyPA)
 
         
