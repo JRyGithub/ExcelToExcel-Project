@@ -28,8 +28,9 @@ def blankNamedSeriesMaker(name):
     return nameList
 
 #WritingExcelFile and Formatiing
-def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, 
-locationList, locationDescription, items, materialCode, approachList, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA, maintenanceTypePA, frequencyPA, notes):
+def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification, notes, materialDesc, surveyId, datesList, surveyorList, buildingName, floor, locationList,
+        locationDescription, items, materialCode, approachList, actionDatesList, normalOccupancyPA, locationPA, accessibilityPA, amountPA, noOfPeoplePA, usePA, averageTimePA,
+        maintenanceTypePA,frequencyPA):
     asbestosTypeSeries = pd.Series(asbestosType).rename("asbestosType")
     productTypeSeries = pd.Series(productType).rename("productType")
     conditionSeries = pd.Series(condition).rename("condition")
@@ -380,9 +381,6 @@ while True:
         obsAndRec = sheet.iloc[0:,13]
         notes = obsAndRec.rename("notes")
 
-        #Sample Catergory to materialDesc
-        samCat =  sheet.iloc[0:,5]
-        materialDesc = samCat.rename("materialDesc")
 
         #surveyId
         surveyId = []
@@ -432,7 +430,7 @@ while True:
         #BuildingName
         propertyName = sheet.iloc[0:,2]
         buildingName = propertyName.rename('building')
-
+        
         #floor
         floor = []
         rangeId = len(columnUniqueIdentifyer)
@@ -453,11 +451,7 @@ while True:
         rangeId = len(columnUniqueIdentifyer)
         for x in range(0,rangeId):
             items.append('')
-        #materialCode
-        materialCode = []
-        rangeId = len(columnUniqueIdentifyer)
-        for x in range(0,rangeId):
-            materialCode.append('')
+        
         #actionDate
         reinspectDate = sheet.iloc[0:,15]
         actionDate = reinspectDate.rename("actionDate")
@@ -505,8 +499,26 @@ while True:
             else:
                 approachList.append("PS")
         
+       
+        materialSheet = pd.read_excel("K:/Resources/Technical Library/20. ASBESTOS/7.AlphaTracker/Materials.xlsx")
+        materialSheet['merged'] = materialSheet.apply(lambda row: {row['Material code']:row['Material description']}, axis=1)
+        matty = materialSheet.loc[:,'merged']
         
+        #Sample Catergory to materialDesc
+        samCat =  sheet.iloc[0:,5]
+        materialCode = []
+        materialDict = {}
+        for number1, mattyDict in matty.iteritems():
+            for key, value in mattyDict.items():
+                materialDict[value.lower()] = key
+        for number, samMat in samCat.iteritems():
+            try:
+                materialCode.append(materialDict[samMat.lower()])
+            except:
+                materialCode.append('')
 
+        materialDesc = samCat.rename("materialDesc")
+        
         
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
         writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
