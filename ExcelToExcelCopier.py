@@ -49,7 +49,6 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     noAccess = blankNamedSeriesMaker("noAccess")
     externalRef = blankNamedSeriesMaker("externalRef")
     recommendedAction = blankNamedSeriesMaker("recommendedAction")
-    # notes = blankNamedSeriesMaker("notes")
     photofile1 = blankNamedSeriesMaker("photofile1")
     photofile2 =  blankNamedSeriesMaker("photofile2")
     default_pa_id = blankNamedSeriesMaker("default_pa_id")
@@ -105,7 +104,7 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     averageTimePA.to_excel(writer, 'sheet1',index=False, index_label='averageTimePA', startcol= 34)
     maintenanceTypePA.to_excel(writer, 'sheet1',index=False, index_label='maintenanceTypePA', startcol= 35)
     frequencyPA.to_excel(writer, 'sheet1',index=False, index_label='frequencyPA', startcol= 36)
-    # 
+    #Adds the ramining colums which have the same name but with a incremental number
     counter = 2
     listCount = 0
     writeCounter = 37
@@ -127,7 +126,7 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
         listCount = listCount +1
     #saves files
     writer.save()
-
+    print("Writing Successfull.")
 def scores (number):
     if(number == 1):
         productType.append(0)
@@ -354,7 +353,7 @@ while True:
         # Iterating through Material Scores and adding values to series.
         for num, score in colMatAssessment.iteritems():
             score = str(score)
-            if(score == "nan") or (score == "-"):
+            if(score == "nan") or (score == "-") or (score == "N/A "):
                 productType.append("")
                 condition.append("")
                 surfaceTreatment.append("")
@@ -369,6 +368,9 @@ while True:
         for num, extent in extentLock.iteritems():
             testString = str(type(extent))
             if(testString == '<class \'float\'>'):
+                unitOM.append('')
+                extents.append('')
+            elif(testString == 'N/A '):
                 unitOM.append('')
                 extents.append('')
             else:
@@ -390,42 +392,63 @@ while True:
         
         #date
         datesList = []
+        check = 0
         for num, dates in columnUniqueIdentifyer.iteritems():
-            date = dates[0:6]
-            year, month, day = date[:2],date[2:4],date[4:]
-            reformattedDate = str(day)+"/"+str(month)+"/20"+str(year)
-            datesList.append(reformattedDate)
-            
+            try:
+                if(len(dates) > 5):
+                    date = dates[0:6]
+                    year, month, day = date[:2],date[2:4],date[4:]
+                    reformattedDate = str(day)+"/"+str(month)+"/20"+str(year)
+                    datesList.append(reformattedDate)
+            except:
+                check = 1
+                break
+        if(check == 1):
+            datesList = []
+            inspectDate = sheet.iloc[0:,16]
+        # inspectDate = inspectDate.rename("Date")
+            for num, inspects in inspectDate.iteritems():
+                testString = str(type(inspects))
+                if(testString == '<class \'pandas._libs.tslibs.nattype.NaTType\'>'):
+                    datesList.append("")
+                else:
+                    inspectDates = str(inspects)
+                    newDate = inspectDates[8:10]+"/"+inspectDates[5:7]+"/"+inspectDates[:4]
+                    datesList.append(newDate)
+
         #surveyor
         surveyorList = []
         for num, surveyor in columnUniqueIdentifyer.iteritems():
-            surveyorName = ''.join(i for i in surveyor if not i.isdigit())
-            if ("SM" in surveyorName) or ("BMI" in surveyorName):
-                surveyorList.append("Samisoni Manu")
-            elif "RMC" in surveyorName:
-                surveyorList.append("Robert McAllister")
-            elif "LE" in surveyorName:
-                surveyorList.append("Luke England")
-            elif "DC" in surveyorName:
-                surveyorList.append("Darren Carter")
-            elif ("CM" in surveyorName) or ("CP" in surveyorName):
-                surveyorList.append("Chloe Parkins")
-            elif ("TD" in surveyorName) or ("DAV" in surveyorName):
-                surveyorList.append("Tony Davison")
-            elif ("BAL" in surveyorName) or ("AB" in surveyorList) or ("HP" in surveyorList) or ("SARAB" in surveyorList):
-                surveyorList.append("Andrew Ball")
-            elif ("JR" in surveyorName):
-                surveyorList.append("Joshua Ryland")
-            elif ("KD" in surveyorName):
-                surveyorList.append("Kurt Downie")
-            elif ("SC" in surveyorName):
-                surveyorList.append("Simon Cunliffe")
-            elif ("SP" in surveyorName):
-                surveyorList.append("Simon Paykel")
-            elif ("RA" in surveyorName):
-                surveyorList.append("Richard Angel")
-            else:
-                surveyorList.append(surveyorName)
+            try:
+                surveyorName = ''.join(i for i in surveyor if not i.isdigit())
+                if ("SM" in surveyorName) or ("BMI" in surveyorName):
+                    surveyorList.append("Samisoni Manu")
+                elif "RM" in surveyorName:
+                    surveyorList.append("Robert McAllister")
+                elif "LE" in surveyorName:
+                    surveyorList.append("Luke England")
+                elif "DC" in surveyorName:
+                    surveyorList.append("Darren Carter")
+                elif ("CM" in surveyorName) or ("CP" in surveyorName):
+                    surveyorList.append("Chloe Parkins")
+                elif ("TD" in surveyorName) or ("DAV" in surveyorName):
+                    surveyorList.append("Tony Davison")
+                elif ("BAL" in surveyorName) or ("AB" in surveyorList) or ("HP" in surveyorList) or ("SARAB" in surveyorList):
+                    surveyorList.append("Andrew Ball")
+                elif ("JR" in surveyorName):
+                    surveyorList.append("Joshua Ryland")
+                elif ("KD" in surveyorName):
+                    surveyorList.append("Kurt Downie")
+                elif ("SC" in surveyorName):
+                    surveyorList.append("Simon Cunliffe")
+                elif ("SP" in surveyorName):
+                    surveyorList.append("Simon Paykel")
+                elif ("RA" in surveyorName):
+                    surveyorList.append("Richard Angel")
+                else:
+                    surveyorList.append(surveyorName)
+            except:
+                surveyorList.append("Unknown")
 
         #BuildingName
         propertyName = sheet.iloc[0:,2]
@@ -478,7 +501,7 @@ while True:
         frequencyPA = []
         for num, score in colPriorAssessment.iteritems():
             score = str(score)
-            if(score == "nan") or (score == "-"):
+            if(score == "nan") or (score == "-") or (score == "N/A "):
                 normalOccupancyPA.append("")
                 locationPA.append("")
                 accessibilityPA.append("")
@@ -499,12 +522,12 @@ while True:
             else:
                 approachList.append("PS")
         
-       
+       #accesses material code sheet and reads it in, creating a dictionary series, which needs to be merged into one large dictionary
         materialSheet = pd.read_excel("K:/Resources/Technical Library/20. ASBESTOS/7.AlphaTracker/Materials.xlsx")
         materialSheet['merged'] = materialSheet.apply(lambda row: {row['Material code']:row['Material description']}, axis=1)
         matty = materialSheet.loc[:,'merged']
         
-        #Sample Catergory to materialDesc
+        #Sample Catergory to materialDesc and matterial code given and appended based on materialDesc
         samCat =  sheet.iloc[0:,5]
         materialCode = []
         materialDict = {}
