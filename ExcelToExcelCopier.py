@@ -42,7 +42,8 @@ def writeExcel (sampleNumber, asbestosType, productType, condition, surfaceTreat
     surveyorList = pd.Series(surveyorList).rename("surveyor")
     floor = pd.Series(floor).rename("floor")
     location = pd.Series(locationList).rename("location")
-    items = pd.Series(items).rename("item")
+    # items = pd.Series(items).rename("item")
+    materialDesc = pd.Series(materialDesc).rename("materialDesc")
     materialCode = pd.Series(materialCode).rename("materialCode")
     sampleNotes = []
     sampleNotes = pd.Series().rename("sampleNotes")
@@ -353,7 +354,7 @@ while True:
         # Iterating through Material Scores and adding values to series.
         for num, score in colMatAssessment.iteritems():
             score = str(score)
-            if(score == "nan") or (score == "-") or (score == "N/A "):
+            if(score == "nan") or (score == "-") or ("N/A" in score):
                 productType.append("")
                 condition.append("")
                 surfaceTreatment.append("")
@@ -469,11 +470,6 @@ while True:
         locationOfSample = sheet.iloc[0:,3]
         locationDescription = locationOfSample.rename("locationDescription")
 
-        #item
-        items = []
-        rangeId = len(columnUniqueIdentifyer)
-        for x in range(0,rangeId):
-            items.append('')
         
         #actionDate
         reinspectDate = sheet.iloc[0:,15]
@@ -501,7 +497,7 @@ while True:
         frequencyPA = []
         for num, score in colPriorAssessment.iteritems():
             score = str(score)
-            if(score == "nan") or (score == "-") or (score == "N/A "):
+            if(score == "nan") or (score == "-") or ("N/A" in score):
                 normalOccupancyPA.append("")
                 locationPA.append("")
                 accessibilityPA.append("")
@@ -527,21 +523,28 @@ while True:
         materialSheet['merged'] = materialSheet.apply(lambda row: {row['Material code']:row['Material description']}, axis=1)
         matty = materialSheet.loc[:,'merged']
         
-        #Sample Catergory to materialDesc and matterial code given and appended based on materialDesc
+        #Sample Catergory to items, items creates a materialCode which in turn creates material description
         samCat =  sheet.iloc[0:,5]
         materialCode = []
         materialDict = {}
+        materialDictTwo = {}
+        materialDesc = []
         for number1, mattyDict in matty.iteritems():
             for key, value in mattyDict.items():
                 materialDict[value.lower()] = key
+                materialDictTwo[key] = value
         for number, samMat in samCat.iteritems():
             try:
                 materialCode.append(materialDict[samMat.lower()])
             except:
                 materialCode.append('')
+        for code in materialCode:
+            try:
+                materialDesc.append(materialDictTwo[code])
+            except:
+                materialDesc.append('')
 
-        materialDesc = samCat.rename("materialDesc")
-        
+        items = samCat.rename("item")
         
         #calls the write excel file, to begin formatting and writing the file passed all values worked put previously
         writeExcel(sampleNumber, asbestosType, productType, condition, surfaceTreatment, extents, unitOM, identification,
